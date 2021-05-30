@@ -1,3 +1,7 @@
 .mapdiv path:hover {
-  fill: aquamarine;
+  fill: rgb(128, 255, 212, 0.3);
+}
+
+.selectedCountry {
+  fill: rgb(128, 255, 212, 0.3);
 }

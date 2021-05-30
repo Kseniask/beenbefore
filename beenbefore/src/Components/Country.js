@@ -1,12 +1,9 @@
-const Country = ({ country, onClick }) => {
-  let name = country.attributes.name || country.attributes.class
-
+import './../App.css'
+const Country = ({ country, onCountryClick }) => {
   return (
     <path
-      className={name}
-      onClick={() => onClick(name)}
+      onClick={e => onCountryClick(e.target)}
       d={country.attributes.d}
-      key={country.attributes.d}
     ></path>
   )
 }
