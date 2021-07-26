@@ -1,27 +1,26 @@
 import Country from './Country'
 import { useState, useEffect } from 'react'
-import xmlCountries from './../countries.xml'
-import axios from 'axios'
-import xmlParser from 'react-xml-parser'
+import { Container } from 'react-bootstrap'
+import { getCountriesObject } from '../Helpers/AxiosHelper'
+import ReactLoading from 'react-loading'
 
-let countriesObj
-
-const Map = () => {
+const Map = ({ mapInputs }) => {
   const [countries, setCountries] = useState([])
   const [countryClass, setCountryClass] = useState('')
+  let isComponentMounted = true
 
   useEffect(() => {
-    axios
-      .get(xmlCountries, {
-        'Content-Type': 'application/xml; charset=utf-8'
-      })
-      .then(response => {
-        countriesObj = new xmlParser().parseFromString(response.data)
-        setCountries(countriesObj.children)
-        return () => {
-          console.log(`Unmounted`)
-        }
-      })
+    isComponentMounted = true
+    ;(async function setCountriesState () {
+      const countriesObj =
+        mapInputs === undefined || mapInputs.length === 0
+          ? await getCountriesObject()
+          : mapInputs
+      setCountries(countriesObj)
+    })()
+    return () => {
+      isComponentMounted = false
+    }
   }, [])
 
   useEffect(() => {
@@ -36,37 +35,50 @@ const Map = () => {
       : (classStr = 'selectedCountry')
     e.className.baseVal = classStr
     setCountryClass(classStr)
-    console.log(countryClass)
   }
 
   return (
-    <div className='mapdiv'>
-      <svg
-        baseProfile='tiny'
-        fill='#ececec'
-        height='600'
-        stroke='black'
-        strokeLinecap='round'
-        strokeLinejoin='round'
-        strokeWidth='.2'
-        version='1.2'
-        viewBox='40 40 1800 900'
-        width={window.width}
-        xmlns='http://www.w3.org/2000/svg'
-      >
-        {countries.map(country => {
-          let countryName = country.attributes.name || country.attributes.class
-          return (
-            <Country
-              key={country.attributes.d}
-              country={country}
-              onCountryClick={setCountry}
-              className={`${countryName} ${countryClass || ''}`}
-            />
-          )
-        })}
-      </svg>
-    </div>
+    <Container className='mapdiv'>
+      {countries.length === 0 || countries[0] === undefined ? (
+        <div>
+          {countries}
+          <ReactLoading
+            type={'bars'}
+            color={'rgba(128, 255, 212, 0.3)'}
+            height={100}
+            width={100}
+          />
+        </div>
+      ) : (
+        <svg
+          baseProfile='tiny'
+          fill='#ececec'
+          height='100%'
+          stroke='black'
+          strokeLinecap='round'
+          strokeLinejoin='round'
+          strokeWidth='.2'
+          version='1.2'
+          className='map'
+          viewBox='110 0 1900 900'
+          width='100%'
+          xmlns='http://www.w3.org/2000/svg'
+        >
+          {countries.map(country => {
+            let countryName =
+              country.attributes.name || country.attributes.class
+            return (
+              <Country
+                key={country.attributes.d}
+                country={country}
+                onCountryClick={setCountry}
+                className={`${countryName} ${countryClass || ''}`}
+              />
+            )
+          })}
+        </svg>
+      )}
+    </Container>
   )
 }
 

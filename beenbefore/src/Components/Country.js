@@ -1,10 +1,12 @@
-import './../App.css'
+import './../App.scss'
 const Country = ({ country, onCountryClick }) => {
   return (
-    <path
-      onClick={e => onCountryClick(e.target)}
-      d={country.attributes.d}
-    ></path>
+    <g>
+      <path
+        onClick={e => onCountryClick(e.target)}
+        d={country.attributes.d}
+      ></path>
+    </g>
   )
 }
 
