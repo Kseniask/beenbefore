@@ -61,6 +61,10 @@ const ExploreWidget = () => {
   }, [exploreCountries])
 
   useEffect(() => {
+    console.log(country)
+  }, [country])
+
+  useEffect(() => {
     isComponentMounted = true
     if (isComponentMounted && selectedCountry !== undefined) {
       setMap(<Map mapInputs={selectedCountry} />)
@@ -73,7 +77,9 @@ const ExploreWidget = () => {
   }, [selectedCountry])
 
   const setClickedCountry = async clickedCountry => {
-    const countryName = clickedCountry.attributes.title
+    const countryName = clickedCountry.attributes
+      ? clickedCountry.attributes.title
+      : clickedCountry.target.innerText
     const country = await getSingleCountry(countryName)
     setSelectedCountry(country)
   }
@@ -100,7 +106,7 @@ const ExploreWidget = () => {
                   <Col md={4} key={country.attributes.title}>
                     <button
                       className='btn btn-link'
-                      onClick={async e => await setClickedCountry(e)}
+                      onClick={e => setClickedCountry(e)}
                     >
                       {countryName}
                     </button>

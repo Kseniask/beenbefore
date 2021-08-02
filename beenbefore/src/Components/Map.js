@@ -86,10 +86,10 @@ const Map = ({ mapInputs }) => {
           viewBox={viewBox}
           xmlns='http://www.w3.org/2000/svg'
           preserveAspectRatio='xMidYMid meet'
+          width={mapInputs.length === 0 ? '' : '300px'}
         >
           {countries.map(country => {
-            let countryName =
-              country.attributes.name || country.attributes.class
+            let countryName = country.attributes.title
             return (
               <Country
                 key={country.attributes.d}
