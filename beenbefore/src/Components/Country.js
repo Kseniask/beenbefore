@@ -5,6 +5,8 @@ const Country = ({ country, onCountryClick }) => {
       <path
         onClick={e => onCountryClick(e.target)}
         d={country.attributes.d}
+        id={country.attributes.id}
+        title={country.attributes.title}
       ></path>
     </g>
   )

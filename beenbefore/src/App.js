@@ -12,7 +12,7 @@ function App () {
       <Container>
         <Navigation />
         <Intro />
-        {/* <Map mapInputs={[]} /> */}
+        <Map mapInputs={[]} />
       </Container>
 
       <Container id='steps-page'>

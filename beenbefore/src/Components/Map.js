@@ -6,11 +6,11 @@ import ReactLoading from 'react-loading'
 
 const Map = ({ mapInputs }) => {
   const [countries, setCountries] = useState([])
-  const [countryClass, setCountryClass] = useState('')
+  const [countryClass, setCountryClass] = useState('0 0 1000 700')
+  const [viewBox, setViewBox] = useState()
   let isComponentMounted = true
 
   useEffect(() => {
-    isComponentMounted = true
     ;(async function setCountriesState () {
       const countriesObj =
         mapInputs === undefined || mapInputs.length === 0
@@ -18,9 +18,12 @@ const Map = ({ mapInputs }) => {
           : mapInputs
       setCountries(countriesObj)
     })()
-    return () => {
-      isComponentMounted = false
-    }
+    const calculatedViewBox =
+      mapInputs === undefined || mapInputs.length === 0
+        ? '0 0 1000 700'
+        : getViewBox(mapInputs)
+
+    setViewBox(calculatedViewBox)
   }, [])
 
   useEffect(() => {
@@ -37,6 +40,28 @@ const Map = ({ mapInputs }) => {
     setCountryClass(classStr)
   }
 
+  const getViewBox = country => {
+    let maxX = 0,
+      maxY = 0
+    country.forEach(elem => {
+      const startPointX = parseInt(elem.attributes.d.split(',')[0].slice(1))
+      const startPointY = parseInt(
+        elem.attributes.d.split(',')[1].split('L')[0]
+      )
+      console.log(maxY)
+      if (maxX === 0) maxX = startPointX
+      if (maxX === 0) maxX = startPointY
+
+      if (startPointX > maxX) {
+        maxX = startPointX
+      }
+      if (startPointY > maxY) {
+        maxY = startPointY
+      }
+    })
+    return `0 0 ${maxX + maxX / 5} ${maxY + maxY / 5}`
+  }
+
   return (
     <Container className='mapdiv'>
       {countries.length === 0 || countries[0] === undefined ? (
@@ -51,18 +76,16 @@ const Map = ({ mapInputs }) => {
         </div>
       ) : (
         <svg
-          baseProfile='tiny'
           fill='#ececec'
-          height='100%'
           stroke='black'
           strokeLinecap='round'
           strokeLinejoin='round'
           strokeWidth='.2'
           version='1.2'
           className='map'
-          viewBox='110 0 1900 900'
-          width='100%'
+          viewBox={viewBox}
           xmlns='http://www.w3.org/2000/svg'
+          preserveAspectRatio='xMidYMid meet'
         >
           {countries.map(country => {
             let countryName =

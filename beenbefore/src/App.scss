@@ -12,15 +12,14 @@ $rectangleColor: rgb(231, 231, 231);
 .map {
   transform: scale(1);
   display: block;
+  margin: auto;
   fill: $lightBlue;
+  width: 300px;
 }
 .mapdiv path:hover {
   fill: $selectedCountryColor;
 }
-svg {
-  position: relative;
-  width: 100%;
-}
+
 .selectedCountry {
   fill: $selectedCountryColor;
 }
